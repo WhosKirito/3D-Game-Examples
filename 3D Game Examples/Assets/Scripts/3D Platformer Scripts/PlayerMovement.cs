@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-     public float turnSpeed = 20f;
-     public float moveSpeed = 1f;
-     public float jumpForce = 3f;
+    public float turnSpeed = 20f;
+    public float moveSpeed = 1f;
+    public float jumpForce = 3f;
+    public bool IsOnGround = true;
     Vector3 m_Movement;
     Rigidbody m_Rigidbody;
     Quaternion m_Rotation = Quaternion.identity;
@@ -15,6 +16,15 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
+    }
+
+    void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Space) && IsOnGround)
+        {
+            m_Rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            IsOnGround = false;
+        }
     }
 
     // Update is called once per frame
@@ -37,4 +47,11 @@ public class PlayerMovement : MonoBehaviour
         m_Rigidbody.MoveRotation (m_Rotation);
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            IsOnGround = true;
+        }
+    }
 }
